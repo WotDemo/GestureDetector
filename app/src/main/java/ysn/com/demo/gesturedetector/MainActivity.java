@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +26,22 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        gestureDetector = new GestureDetector(this, new JackGestureListener());
+
+        final View btn = findViewById(R.id.main_activity_btn);
+        gestureDetector = new GestureDetector(this, new JackGestureListener() {
+            @Override
+            protected void slideLeftToRight(float distanceX) {
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) btn.getLayoutParams();
+                params.rightMargin += distanceX;
+                btn.setLayoutParams(params);
+            }
+
+            @Override
+            protected void slideRightToLeft(float distanceX) {
+
+            }
+        });
+
     }
 
     @Override
