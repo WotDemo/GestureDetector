@@ -3,6 +3,9 @@ package ysn.com.demo.gesturedetector;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import ysn.com.demo.gesturedetector.listener.OnSlideLeftToRightListener;
+import ysn.com.demo.gesturedetector.listener.OnSlideRightToLeftListener;
+
 /**
  * @Author yangsanning
  * @ClassName JackGestureListener
@@ -10,7 +13,7 @@ import android.view.MotionEvent;
  * @Date 2020/4/8
  * @History 2020/4/8 author: description:
  */
-public abstract class JackGestureListener extends GestureDetector.SimpleOnGestureListener {
+public class JackGestureListener extends GestureDetector.SimpleOnGestureListener {
 
     /**
      * 滑动偏移量, 大于他则取消滑动
@@ -23,6 +26,9 @@ public abstract class JackGestureListener extends GestureDetector.SimpleOnGestur
     private static final int HORIZONTAL_MIN_DISTANCE = 200;
 
     private SlideMode slideMode;
+
+    private OnSlideLeftToRightListener onSlideLeftToRightListener;
+    private OnSlideRightToLeftListener onSlideRightToLeftListener;
 
     public JackGestureListener() {
     }
@@ -47,23 +53,41 @@ public abstract class JackGestureListener extends GestureDetector.SimpleOnGestur
             return false;
         }
 
-
         // 从右往左滑动
-        if (slideMode.isSlideLeftToRight() || (slideMode.isSlideNone() && e1.getX() - e2.getX() > HORIZONTAL_MIN_DISTANCE)) {
-            slideMode = SlideMode.SLIDE_LEFT_TO_RIGHT;
-            slideLeftToRight(distanceX);
-            return true;
+        if (onSlideRightToLeftListener != null) {
+            if (slideMode.isSlideRightToLeft() || (slideMode.isSlideNone() && e1.getX() - e2.getX() > HORIZONTAL_MIN_DISTANCE)) {
+                slideMode = SlideMode.SLIDE_RIGHT_TO_LEFT;
+                onSlideRightToLeftListener.onSlideRightToLeft(e1, e2, distanceX, distanceY);
+                return true;
+            }
         }
 
         // 从左往右滑动
-        if (slideMode.isSlideRightToLeft() || (slideMode.isSlideNone() && e2.getX() - e1.getX() > HORIZONTAL_MIN_DISTANCE)) {
-            slideRightToLeft(distanceX);
-            return true;
+        if (onSlideLeftToRightListener != null) {
+            if (slideMode.isSlideLeftToRight() || (slideMode.isSlideNone() && e2.getX() - e1.getX() > HORIZONTAL_MIN_DISTANCE)) {
+                slideMode = SlideMode.SLIDE_LEFT_TO_RIGHT;
+                onSlideLeftToRightListener.onSlideLeftToRight(e1, e2, distanceX, distanceY);
+                return true;
+            }
         }
         return false;
     }
 
-    abstract protected void slideLeftToRight(float distanceX);
+    /**
+     * 设置从左向右滑动监听
+     * @param onSlideLeftToRightListener 从左向右滑动监听
+     */
+    public JackGestureListener setOnSlideLeftToRightListener(OnSlideLeftToRightListener onSlideLeftToRightListener) {
+        this.onSlideLeftToRightListener = onSlideLeftToRightListener;
+        return this;
+    }
 
-    abstract protected void slideRightToLeft(float distanceX);
+    /**
+     * 设置从右向左滑动时监听
+     * @param onSlideRightToLeftListener 从右向左滑动时监听
+     */
+    public JackGestureListener setOnSlideRightToLeftListener(OnSlideRightToLeftListener onSlideRightToLeftListener) {
+        this.onSlideRightToLeftListener = onSlideRightToLeftListener;
+        return this;
+    }
 }

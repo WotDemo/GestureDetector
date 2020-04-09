@@ -36,7 +36,7 @@ public enum SlideMode {
     }
 
     /**
-     * 是否垂直滑动
+     * 是否是默认模式
      */
     public boolean isSlideNone() {
         return mode == SlideMode.SLIDE_NONE.mode;
@@ -50,14 +50,14 @@ public enum SlideMode {
     }
 
     /**
-     * 是否向左滑动
+     * 从左往右滑动
      */
     public boolean isSlideLeftToRight() {
         return mode == SlideMode.SLIDE_LEFT_TO_RIGHT.mode;
     }
 
     /**
-     * 是否向右滑动
+     * 从右往左滑动
      */
     public boolean isSlideRightToLeft() {
         return mode == SlideMode.SLIDE_RIGHT_TO_LEFT.mode;
