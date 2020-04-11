@@ -29,14 +29,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final View btn = findViewById(R.id.main_activity_btn);
+        final View view = findViewById(R.id.main_activity_time_layout);
         gestureDetector = new GestureDetector(this, new JackGestureListener()
                 .setOnSlideRightToLeftListener(new OnSlideRightToLeftListener() {
                     @Override
                     public void onSlideRightToLeft(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) btn.getLayoutParams();
-                        params.rightMargin += distanceX;
-                        btn.setLayoutParams(params);
+                        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+                        float temp = params.rightMargin + distanceX;
+                        if (temp < 0 && Math.abs(temp) <  view.getWidth()) {
+                            params.rightMargin += distanceX;
+                            view.setLayoutParams(params);
+                        }
+                        LogUtils.d("rightMargin: " + (params.rightMargin + distanceX));
                     }
                 }));
 
